@@ -1,16 +1,17 @@
 package one.digitalinnovation.parking.controller;
 
 import io.restassured.RestAssured;
+import one.digitalinnovation.parking.controller.dto.ParkingCreateDTO;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ParkingControllerTestIT {
+class ParkingControllerTest {
 
     @LocalServerPort
     private int randomPort;
@@ -21,16 +22,33 @@ class ParkingControllerTestIT {
     }
 
     @Test
-    void whenfindAllThenCheckResult() {
+    void whenFindAllThenCheckResult() {
         RestAssured.given()
                 .when()
                 .get("/parking")
                 .then()
-                .body("license[0]", Matchers.equalTo("DMS-1111"));
+                .statusCode(HttpStatus.OK.value());
+                //.body("license", Matchers.equalTo("DMS-1111"));
                 //.extract().response().body().prettyPrint();
     }
 
     @Test
-    void create() {
+    void whenCreateThenCheckIsCreated() {
+
+        var createDTO = new ParkingCreateDTO();
+        createDTO.setColor("AMARELO");
+        createDTO.setLicense("WAR-9453");
+        createDTO.setModel("FORD FUSION");
+        createDTO.setState("SP");
+
+        RestAssured.given()
+                .when()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createDTO)
+                .post("/parking")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("license", Matchers.equalTo("WAR-9453"))
+                .body("color", Matchers.equalTo("AMARELO"));
     }
 }
