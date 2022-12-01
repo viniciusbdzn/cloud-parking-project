@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ParkingControllerTest {
+class ParkingControllerTest extends AbstractContainerBase {
 
     @LocalServerPort
     private int randomPort;
@@ -36,7 +36,7 @@ class ParkingControllerTest {
     void whenCreateThenCheckIsCreated() {
 
         var createDTO = new ParkingCreateDTO();
-        createDTO.setColor("AMARELO");
+        createDTO.setColor("YELLOW");
         createDTO.setLicense("WAR-9453");
         createDTO.setModel("FORD FUSION");
         createDTO.setState("SP");
@@ -49,6 +49,6 @@ class ParkingControllerTest {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("license", Matchers.equalTo("WAR-9453"))
-                .body("color", Matchers.equalTo("AMARELO"));
+                .body("color", Matchers.equalTo("YELLOW"));
     }
 }
